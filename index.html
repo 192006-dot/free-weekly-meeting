@@ -414,8 +414,17 @@ var SF_FORM = {
     return v.replace(/[^0-9]/g, '').length >= 8;
   }
 
+  // Safety net: if this copy of the page was published before the form was
+  // wired up, never pretend a signup succeeded.
+  var wired = SF_FORM.action.indexOf('__') !== 0;
+  if (!wired) {
+    btn.disabled = true;
+    btn.textContent = 'Signups open in a few minutes';
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    if (!wired) { return; }
 
     var name = document.getElementById('name').value.trim();
     var email = document.getElementById('email').value.trim();
